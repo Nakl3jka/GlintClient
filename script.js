@@ -1,121 +1,70 @@
-import { supabase } from './supabase.js';
-
-// --- Fade-in on scroll ---
-const fadeElements = document.querySelectorAll('.fade-in');
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, { threshold: 0.2 });
-fadeElements.forEach(el => observer.observe(el));
-
-// --- Navbar toggle ---
-const toggle = document.getElementById('navToggle');
-const navLinks = document.getElementById('navLinks');
-toggle.addEventListener('click', () => {
-    navLinks.classList.toggle('open');
-});
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-    });
-});
-
-// --- Download Modal ---
-const modal = document.getElementById('downloadModal');
-const openBtn = document.getElementById('openDownloadModal');
-const closeBtn = document.getElementById('closeModal');
-const windowsBtn = document.getElementById('windowsDownloadBtn');
-
-openBtn.addEventListener('click', () => modal.classList.add('active'));
-closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.remove('active');
-});
-windowsBtn.addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.href = 'https://example.com/glint-client-setup.exe';
-    a.download = 'GlintClient_Setup.exe';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    modal.classList.remove('active');
-});
-
-// --- Activation Code Checker ---
-const activationInput = document.getElementById('activationInput');
-const activationCheckBtn = document.getElementById('activationCheckBtn');
-const activationResult = document.getElementById('activationResult');
-
-activationCheckBtn.addEventListener('click', async () => {
-    const code = activationInput.value.trim();
-    if (!code) {
-        activationResult.textContent = 'Please enter a code.';
-        activationResult.className = 'activation-result invalid';
-        return;
-    }
+// ===== Pobieranie najnowszej aktualizacji =====
+async function fetchLatestUpdate() {
+    const container = document.getElementById('latestUpdate');
+    const DOCS_URL = 'https://docs.google.com/document/d/1UyX9zzSaaz2HVWZkkavanANkWTI0up2otZ1yywN8JhE/export?format=txt';
 
     try {
-        const { data, error } = await supabase
-            .from('codes')
-            .select('code, active, expires_at, reward')
-            .eq('code', code)
-            .single();
+        const response = await fetch(DOCS_URL);
+        if (!response.ok) throw new Error('Nie udało się pobrać');
 
-        if (error || !data) {
-            activationResult.textContent = 'Invalid code.';
-            activationResult.className = 'activation-result invalid';
-            return;
-        }
+        const text = await response.text();
+        const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
-        if (!data.active) {
-            activationResult.textContent = 'Expired code.';
-            activationResult.className = 'activation-result expired';
-            return;
-        }
+        let latest = null;
+        let changes = [];
 
-        if (data.expires_at) {
-            const now = new Date();
-            const exp = new Date(data.expires_at);
-            if (exp < now) {
-                activationResult.textContent = 'Expired code.';
-                activationResult.className = 'activation-result expired';
-                return;
+        for (const line of lines) {
+            const versionMatch = line.match(/^v(\d+\.\d+\.\d+)\s*[-–—]\s*(\d{2}\.\d{2}\.\d{4})/i) ||
+                                line.match(/^v(\d+\.\d+\.\d+)\s*(\d{2}\.\d{2}\.\d{4})/i);
+
+            if (versionMatch) {
+                if (latest) break; // już mamy najnowszy
+                latest = { version: versionMatch[1], date: versionMatch[2] };
+                changes = [];
+            } else if (latest && (line.startsWith('-') || line.startsWith('•') || line.startsWith('*') || line.startsWith('✦'))) {
+                let change = line.replace(/^[-•*✦]\s*/, '').trim();
+                if (change) changes.push(change);
             }
         }
 
-        let msg = '✅ Valid code.';
-        if (data.reward) msg += ` Reward: ${data.reward}`;
-        activationResult.textContent = msg;
-        activationResult.className = 'activation-result valid';
-    } catch (err) {
-        activationResult.textContent = 'Error checking code.';
-        activationResult.className = 'activation-result invalid';
-        console.error(err);
-    }
-});
-
-// --- Player Count (exactly under the download button) ---
-const playerCountDisplay = document.getElementById('playerCountDisplay');
-
-async function updatePlayerCount() {
-    try {
-        const { count, error } = await supabase
-            .from('player_active')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_online', true);
-
-        if (error) throw error;
-
-        const countText = count === 1 ? '1 player' : `${count} players`;
-        playerCountDisplay.innerHTML = `<span>${countText}</span> now online`;
-    } catch (err) {
-        console.error('Error fetching player count:', err);
-        playerCountDisplay.textContent = 'Failed to load player count';
+        if (latest && changes.length > 0) {
+            container.innerHTML = `
+                <div class="update-header">
+                    <span class="update-version">v${latest.version}</span>
+                    <span class="update-date">${latest.date}</span>
+                </div>
+                <ul class="update-changes">
+                    ${changes.map(c => `<li>✦ ${c}</li>`).join('')}
+                </ul>
+                <a href="updates.html" class="btn btn-secondary btn-small">View Full Changelog</a>
+            `;
+        } else {
+            // Przykładowe dane fallback
+            container.innerHTML = `
+                <div class="update-header">
+                    <span class="update-version">v0.0.1</span>
+                    <span class="update-date">07.30.2026</span>
+                </div>
+                <ul class="update-changes">
+                    <li>✦ Added shop</li>
+                    <li>✦ Added codes</li>
+                    <li>✦ Added log in</li>
+                    <li>✦ Added settings</li>
+                </ul>
+                <a href="updates.html" class="btn btn-secondary btn-small">View Full Changelog</a>
+            `;
+        }
+    } catch (error) {
+        console.error('Błąd pobierania aktualizacji:', error);
+        container.innerHTML = `
+            <div style="text-align:center;color:#ff6b6b;padding:20px 0;">
+                ❌ Nie udało się pobrać aktualizacji
+            </div>
+            <a href="updates.html" class="btn btn-secondary btn-small" style="display:block;margin:0 auto;text-align:center;max-width:200px;">
+                View Full Changelog
+            </a>
+        `;
     }
 }
 
-updatePlayerCount();
-setInterval(updatePlayerCount, 10000);
+fetchLatestUpdate();
