@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Updates – Glint Client</title>
+    <link rel="icon" href="icon.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(40,40,40,0.3) 0px, rgba(40,40,40,0.3) 2px, transparent 2px, transparent 4px),
+                repeating-linear-gradient(90deg, rgba(40,40,40,0.3) 0px, rgba(40,40,40,0.3) 2px, transparent 2px, transparent 4px);
+            background-size: 8px 8px;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            background: #1a1a1a;
+            border: 3px solid #00e5ff;
+            padding: 50px 30px;
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.1);
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            image-rendering: pixelated;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.2));
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 16px;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+        }
+
+        .sub-message {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 14px;
+            padding: 14px 24px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 3px solid #00e5ff;
+            box-shadow: inset 0 -4px 0 #1a1a1a, 0 0 0 transparent;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            letter-spacing: 0.5px;
+            line-height: 1;
+            border-radius: 0;
+            min-width: 160px;
+        }
+
+        .btn:hover {
+            border-color: #66f0ff;
+            box-shadow: inset 0 -4px 0 #1a1a1a, 0 0 20px rgba(0, 229, 255, 0.4);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            border-color: #888;
+        }
+
+        .btn-secondary:hover {
+            border-color: #aaa;
+            box-shadow: inset 0 -4px 0 #1a1a1a, 0 0 20px rgba(136, 136, 136, 0.3);
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            font-size: 10px;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .sub-message {
+                font-size: 14px;
+            }
+
+            .btn {
+                font-size: 12px;
+                padding: 12px 18px;
+                min-width: 120px;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="icon.png" alt="Glint Client" class="icon" />
+        <h1>This subsite is closed!</h1>
+        <p class="sub-message">Get latest updates on new site!</p>
+        <div class="buttons">
+            <a href="https://docs.google.com/document/d/1UyX9zzSaaz2HVWZkkavanANkWTI0up2otZ1yywN8JhE/edit?usp=sharing" target="_blank" class="btn">Check new site</a>
+            <a href="index.html" class="btn btn-secondary">Go Back</a>
+        </div>
+        <div class="footer-note">Glint Client – always up to date</div>
+    </div>
+</body>
+</html>
