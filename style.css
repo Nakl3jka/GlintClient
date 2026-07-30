@@ -167,6 +167,13 @@ a {
     image-rendering: pixelated;
 }
 
+.nav-banner-logo {
+    height: 40px;
+    width: auto;
+    image-rendering: pixelated;
+}
+
+/* If you want the banner logo to be larger, adjust the height */
 .nav-brand {
     font-size: 20px;
     color: #fff;
@@ -675,5 +682,9 @@ section {
     .btn {
         width: 100%;
         max-width: 260px;
+    }
+
+    .nav-banner-logo {
+        height: 30px;
     }
 }
