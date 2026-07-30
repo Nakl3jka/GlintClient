@@ -1,6 +1,197 @@
-All mods used in glintclient: 
-(Główne)
-Sodium, Lithium, Iris Shaders, FerriteCore, Entity Culling, Continuity, Inventory HUD+, Custom Crosshair Mod, AppleSkin, Mod Menu, Reese's Sodium Options, Sodium Extra, Starlight, Indium, Krypton, Zoomify, Dynamic Lights, Memory Leak Fix, Smooth Boot, ImmediateFast, Clumps, Borderless Window, Bobby, Cull Leaves, Language Reload, Raised, Capes, Model Gap Fix, Animatica, CIT Resewn, Custom Entity Models, Fabrishot, FastAnim, MidnightControls, No Chat Reports, Sound Physics Remastered, Debugify.Biblioteki systemowe 
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mody – Glint Client</title>
+    <link rel="icon" href="icon.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-(Niewidoczne w grze, wymagane do działania)
-Fabric API, Cloth Config API, Architectury API, YetAnotherConfigLib, Cloth Message API, Indium API, CompleteConfig, Balm, CreativeCore, Puzzles Lib, Forge Config API Port, MaLiLib, Iceberg, Prism, Satin API, OwO Lib, Cardinal Components, Fabric Language Kotlin, Patchouli, Blur API, Trinkets, Polymorph, Searchables, AutoConfig Updated, MixinSquared, Chunk Pregenerator Lib, Dynamic Asset Generator, Resourceful Lib, SuperMartijn642's Core Lib, Collective, ToolTipFix, Better Runtime Resource Pack, MixinExtras, Cupboard, Blueprint, Enchiridion, Framework.
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(40,40,40,0.3) 0px, rgba(40,40,40,0.3) 2px, transparent 2px, transparent 4px),
+                repeating-linear-gradient(90deg, rgba(40,40,40,0.3) 0px, rgba(40,40,40,0.3) 2px, transparent 2px, transparent 4px);
+            background-size: 8px 8px;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border: 3px solid #00e5ff;
+            padding: 40px 30px;
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.1);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #2a2a2a;
+            padding-bottom: 16px;
+        }
+
+        .icon {
+            width: 48px;
+            height: 48px;
+            image-rendering: pixelated;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+        }
+
+        .mods-count {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .category {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-size: 16px;
+            color: #00e5ff;
+            border-bottom: 2px solid #2a2a2a;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mod-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .mod-item {
+            background: #222;
+            border: 2px solid #333;
+            padding: 10px 14px;
+            font-size: 11px;
+            color: #ccc;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .mod-item:hover {
+            border-color: #00e5ff;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 24px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 14px;
+            padding: 12px 24px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 3px solid #888;
+            box-shadow: inset 0 -4px 0 #1a1a1a;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 0;
+        }
+
+        .back-btn:hover {
+            border-color: #aaa;
+            box-shadow: inset 0 -4px 0 #1a1a1a, 0 0 20px rgba(136, 136, 136, 0.3);
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            h1 { font-size: 18px; }
+            .mod-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .mod-item { font-size: 10px; padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="icon.png" alt="Glint Client" class="icon" />
+            <div>
+                <h1>📦 Lista modów</h1>
+                <div class="mods-count" id="modCount"></div>
+            </div>
+        </div>
+
+        <div id="modsContainer"></div>
+
+        <a href="index.html" class="back-btn">← Powrót</a>
+    </div>
+
+    <script>
+        // ===== Lista modów =====
+        const modsData = {
+            'Główne mody': [
+                'Sodium', 'Lithium', 'Iris Shaders', 'FerriteCore', 'Entity Culling',
+                'Continuity', 'Inventory HUD+', 'Custom Crosshair Mod', 'AppleSkin',
+                'Mod Menu', "Reese's Sodium Options", 'Sodium Extra', 'Starlight',
+                'Indium', 'Krypton', 'Zoomify', 'Dynamic Lights', 'Memory Leak Fix',
+                'Smooth Boot', 'ImmediateFast', 'Clumps', 'Borderless Window', 'Bobby',
+                'Cull Leaves', 'Language Reload', 'Raised', 'Capes', 'Model Gap Fix',
+                'Animatica', 'CIT Resewn', 'Custom Entity Models', 'Fabrishot',
+                'FastAnim', 'MidnightControls', 'No Chat Reports',
+                'Sound Physics Remastered', 'Debugify'
+            ],
+            'Biblioteki systemowe (wymagane do działania)': [
+                'Fabric API', 'Cloth Config API', 'Architectury API',
+                'YetAnotherConfigLib', 'Cloth Message API', 'Indium API',
+                'CompleteConfig', 'Balm', 'CreativeCore', 'Puzzles Lib',
+                'Forge Config API Port', 'MaLiLib', 'Iceberg', 'Prism',
+                'Satin API', 'OwO Lib', 'Cardinal Components',
+                'Fabric Language Kotlin', 'Patchouli', 'Blur API', 'Trinkets',
+                'Polymorph', 'Searchables', 'AutoConfig Updated', 'MixinSquared',
+                'Chunk Pregenerator Lib', 'Dynamic Asset Generator',
+                'Resourceful Lib', "SuperMartijn642's Core Lib", 'Collective',
+                'ToolTipFix', 'Better Runtime Resource Pack', 'MixinExtras',
+                'Cupboard', 'Blueprint', 'Enchiridion', 'Framework'
+            ]
+        };
+
+        function renderMods() {
+            const container = document.getElementById('modsContainer');
+            let total = 0;
+            let html = '';
+
+            for (const [category, mods] of Object.entries(modsData)) {
+                total += mods.length;
+                html += `
+                    <div class="category">
+                        <div class="category-title">${category}</div>
+                        <div class="mod-grid">
+                            ${mods.map(mod => `<div class="mod-item">${mod}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            document.getElementById('modCount').textContent = `Łącznie: ${total} modów`;
+        }
+
+        renderMods();
+    </script>
+</body>
+</html>
