@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,12 +9,11 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- ===== NAVBAR ===== -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-left">
                 <img src="icon.png" alt="Glint Client" class="nav-logo" />
-                <!-- Banner logo instead of text -->
                 <img src="bigicon.png" alt="Glint Client" class="nav-banner-logo" />
             </div>
             <div class="nav-right" id="navLinks">
@@ -22,7 +21,7 @@
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#download" class="nav-link">Download</a>
                 <a href="#updates" class="nav-link">Updates</a>
-                <a href="#socials" class="nav-link">TikTok</a>
+                <a href="https://www.tiktok.com/@glintclient" target="_blank" class="nav-link">TikTok</a>
             </div>
             <div class="nav-toggle" id="navToggle">
                 <span></span>
@@ -32,7 +31,7 @@
         </div>
     </nav>
 
-    <!-- Hero -->
+    <!-- ===== HERO ===== -->
     <section class="hero" id="hero">
         <div class="hero-content">
             <img src="icon.png" alt="Glint Client" class="hero-logo fade-in" />
@@ -45,7 +44,7 @@
         </div>
     </section>
 
-    <!-- Features -->
+    <!-- ===== FEATURES ===== -->
     <section class="features" id="features">
         <div class="container">
             <h2 class="section-title fade-in">Features</h2>
@@ -63,7 +62,7 @@
         </div>
     </section>
 
-    <!-- Download -->
+    <!-- ===== DOWNLOAD ===== -->
     <section class="download" id="download">
         <div class="container">
             <h2 class="section-title fade-in">Download</h2>
@@ -71,34 +70,28 @@
             <div class="download-btn-wrap fade-in">
                 <button class="btn btn-primary btn-large" id="openDownloadModal">DOWNLOAD</button>
             </div>
-            <!-- Player Count Display (exactly under the button) -->
+            <!-- Licznik aktywnych graczy -->
             <div class="player-count-container fade-in">
                 <p id="playerCountDisplay">Loading players...</p>
             </div>
         </div>
     </section>
 
-    <!-- Updates -->
+    <!-- ===== UPDATES (zamknięta zakładka) ===== -->
     <section class="updates" id="updates">
         <div class="container">
             <h2 class="section-title fade-in">Latest Update</h2>
             <div class="update-card fade-in">
-                <div class="update-header">
-                    <span class="update-version">v2.1.0</span>
-                    <span class="update-date">July 30, 2026</span>
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 20px; color: #fff; margin-bottom: 12px;">📢 Zamknięto zakładkę Update Log</div>
+                    <div style="font-size: 14px; color: #aaa; margin-bottom: 20px;">Użyj nowej strony</div>
+                    <a href="https://docs.google.com/document/d/1UyX9zzSaaz2HVWZkkavanANkWTI0up2otZ1yywN8JhE/edit?hl=pl&pli=1&tab=t.0" target="_blank" class="btn btn-primary">Sprawdź</a>
                 </div>
-                <ul class="update-changes">
-                    <li>✦ Improved FPS stability on low-end hardware</li>
-                    <li>✦ Added new cosmetic cape styles</li>
-                    <li>✦ Fixed login timeout issues</li>
-                    <li>✦ Optimized memory usage</li>
-                </ul>
-                <a href="updates.html" class="btn btn-secondary btn-small">View Full Changelog</a>
             </div>
         </div>
     </section>
 
-    <!-- Activation -->
+    <!-- ===== ACTIVATION ===== -->
     <section class="activation" id="activation">
         <div class="container">
             <h2 class="section-title fade-in">Activation Code</h2>
@@ -111,19 +104,19 @@
         </div>
     </section>
 
-    <!-- Socials -->
+    <!-- ===== SOCIALS ===== -->
     <section class="socials" id="socials">
         <div class="container">
             <h2 class="section-title fade-in">Socials</h2>
             <div class="socials-grid fade-in">
-                <a href="https://www.tiktok.com" target="_blank" class="btn btn-social">
+                <a href="https://www.tiktok.com/@glintclient" target="_blank" class="btn btn-social">
                     <span>🎵</span> Follow on TikTok
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -144,21 +137,142 @@
         </div>
     </footer>
 
-    <!-- Modal -->
+    <!-- ===== MODAL (DOWNLOAD) ===== -->
     <div class="modal-overlay" id="downloadModal">
         <div class="modal-box">
             <button class="modal-close" id="closeModal">&times;</button>
             <h2 class="modal-title">Download Launcher</h2>
             <p class="modal-sub">Choose your platform</p>
             <button class="btn btn-windows" id="windowsDownloadBtn">
-                <img src="https://i.imgur.com/8Wj7qWg.png" alt="Windows" class="windows-icon" />
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/053/782/857/small/windows-logo-windows-logo-windows-icon-transparent-social-media-icons-free-png.png" alt="Windows" class="windows-icon" />
                 WINDOWS
             </button>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="supabase.js" type="module"></script>
-    <script src="script.js" type="module"></script>
+    <!-- ===== SCRIPTS ===== -->
+    <script type="module">
+        import { supabase } from './supabase.js';
+
+        // --- Fade-in on scroll ---
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+        fadeElements.forEach(el => observer.observe(el));
+
+        // --- Navbar toggle ---
+        const toggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // --- Download Modal ---
+        const modal = document.getElementById('downloadModal');
+        const openBtn = document.getElementById('openDownloadModal');
+        const closeBtn = document.getElementById('closeModal');
+        const windowsBtn = document.getElementById('windowsDownloadBtn');
+
+        openBtn.addEventListener('click', () => modal.classList.add('active'));
+        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+        windowsBtn.addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = 'https://example.com/glint-client-setup.exe';
+            a.download = 'GlintClient_Setup.exe';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            modal.classList.remove('active');
+        });
+
+        // --- Activation Code Checker ---
+        const activationInput = document.getElementById('activationInput');
+        const activationCheckBtn = document.getElementById('activationCheckBtn');
+        const activationResult = document.getElementById('activationResult');
+
+        activationCheckBtn.addEventListener('click', async () => {
+            const code = activationInput.value.trim();
+            if (!code) {
+                activationResult.textContent = 'Please enter a code.';
+                activationResult.className = 'activation-result invalid';
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('codes')
+                    .select('code, active, expires_at, reward')
+                    .eq('code', code)
+                    .single();
+
+                if (error || !data) {
+                    activationResult.textContent = 'Invalid code.';
+                    activationResult.className = 'activation-result invalid';
+                    return;
+                }
+
+                if (!data.active) {
+                    activationResult.textContent = 'Expired code.';
+                    activationResult.className = 'activation-result expired';
+                    return;
+                }
+
+                if (data.expires_at) {
+                    const now = new Date();
+                    const exp = new Date(data.expires_at);
+                    if (exp < now) {
+                        activationResult.textContent = 'Expired code.';
+                        activationResult.className = 'activation-result expired';
+                        return;
+                    }
+                }
+
+                let msg = '✅ Valid code.';
+                if (data.reward) msg += ` Reward: ${data.reward}`;
+                activationResult.textContent = msg;
+                activationResult.className = 'activation-result valid';
+            } catch (err) {
+                activationResult.textContent = 'Error checking code.';
+                activationResult.className = 'activation-result invalid';
+                console.error(err);
+            }
+        });
+
+        // --- Player Count ---
+        const playerCountDisplay = document.getElementById('playerCountDisplay');
+
+        async function updatePlayerCount() {
+            try {
+                const { count, error } = await supabase
+                    .from('player_active')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('is_online', true);
+
+                if (error) throw error;
+
+                const countText = count === 1 ? '1 player' : `${count} players`;
+                playerCountDisplay.innerHTML = `<span>${countText}</span> now online`;
+            } catch (err) {
+                console.error('Error fetching player count:', err);
+                playerCountDisplay.textContent = 'Failed to load player count';
+            }
+        }
+
+        updatePlayerCount();
+        setInterval(updatePlayerCount, 10000);
+    </script>
 </body>
 </html>
