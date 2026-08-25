@@ -9,6 +9,67 @@
     <!-- Font Awesome 6 (darmowa) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
+    <style>
+        /* dodatkowe style dla licznika */
+        .countdown-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00e5ff;
+            box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.1);
+            image-rendering: pixelated;
+        }
+        .countdown-digits {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 28px;
+            color: #fff;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+        .countdown-digits span {
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+        .countdown-label {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 6px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .countdown-label i {
+            color: #00e5ff;
+            margin-right: 6px;
+        }
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .countdown-digits {
+                font-size: 20px;
+            }
+            .countdown-digits span {
+                min-width: 40px;
+            }
+        }
+        @media (max-width: 480px) {
+            .countdown-digits {
+                font-size: 16px;
+                letter-spacing: 2px;
+            }
+            .countdown-digits span {
+                min-width: 30px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- ===== NAVBAR ===== -->
@@ -40,9 +101,20 @@
             <img src="icon.png" alt="Glint Client" class="hero-logo fade-in" />
             <h1 class="hero-title fade-in">Fast.<br />Clean.<br />Minecraft.</h1>
             <p class="hero-desc fade-in">A lightweight Minecraft Client focused on FPS, smooth gameplay and modern design.</p>
+            
             <div class="hero-buttons fade-in">
                 <a href="#download" class="btn btn-primary"><i class="fas fa-download"></i> DOWNLOAD</a>
                 <a href="#updates" class="btn btn-secondary"><i class="fas fa-history"></i> UPDATE LOG</a>
+            </div>
+
+            <!-- ===== NOWY LICZNIK ===== -->
+            <div class="countdown-wrapper fade-in" id="countdownWrapper">
+                <div class="countdown-digits" id="countdownDisplay">
+                    <span id="days">??</span>:<span id="hours">??</span>:<span id="minutes">??</span>:<span id="seconds">??</span>
+                </div>
+                <div class="countdown-label">
+                    <i class="fas fa-hourglass-half"></i> SOON WE WILL START THE COUNTDOWN
+                </div>
             </div>
         </div>
     </section>
@@ -278,6 +350,58 @@
 
         updatePlayerCount();
         setInterval(updatePlayerCount, 10000);
+
+        // ==========================================
+        // === NOWY LICZNIK – pytajniki i odliczanie ===
+        // ==========================================
+        (function setupCountdown() {
+            // Ustawiamy datę docelową (przykładowo: za 7 dni od teraz)
+            // Możesz zmienić na dowolną datę w formacie 'YYYY-MM-DDTHH:mm:ss'
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 7); // +7 dni
+            targetDate.setHours(12, 0, 0, 0); // ustawiamy na południe
+
+            const daysSpan = document.getElementById('days');
+            const hoursSpan = document.getElementById('hours');
+            const minutesSpan = document.getElementById('minutes');
+            const secondsSpan = document.getElementById('seconds');
+
+            function updateCountdown() {
+                const now = new Date();
+                let diff = targetDate - now;
+
+                if (diff <= 0) {
+                    // Gdy odliczanie dobiegło końca – pokazujemy 00:00:00:00
+                    daysSpan.textContent = '00';
+                    hoursSpan.textContent = '00';
+                    minutesSpan.textContent = '00';
+                    secondsSpan.textContent = '00';
+                    return;
+                }
+
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                diff -= d * (1000 * 60 * 60 * 24);
+                const h = Math.floor(diff / (1000 * 60 * 60));
+                diff -= h * (1000 * 60 * 60);
+                const m = Math.floor(diff / (1000 * 60));
+                diff -= m * (1000 * 60);
+                const s = Math.floor(diff / 1000);
+
+                daysSpan.textContent = String(d).padStart(2, '0');
+                hoursSpan.textContent = String(h).padStart(2, '0');
+                minutesSpan.textContent = String(m).padStart(2, '0');
+                secondsSpan.textContent = String(s).padStart(2, '0');
+            }
+
+            // Najpierw wyświetlamy pytajniki (już są w HTML)
+            // Po 2 sekundach zaczynamy odliczanie
+            setTimeout(() => {
+                // podmieniamy pytajniki na rzeczywiste cyfry
+                updateCountdown();
+                // i startujemy interwał
+                setInterval(updateCountdown, 1000);
+            }, 2000); // 2000ms = 2 sekundy
+        })();
     </script>
 </body>
 </html>
