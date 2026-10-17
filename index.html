@@ -6,9 +6,25 @@
     <title>Glint Client - Free Minecraft Launcher</title>
     <meta name="description" content="Glint Client - free Minecraft launcher. Fast, lightweight and modern." />
     <link rel="icon" href="icon.png" type="image/png" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <!-- 引入 Minecraft 字体（CDNFonts） -->
+    <link href="https://fonts.cdnfonts.com/css/minecraft-3" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
+    <style>
+        /* 全局覆盖字体，优先使用 Minecraft Regular */
+        body, .btn, .hero__title, .hero__desc, .section-heading h2, 
+        .feature-card h3, .feature-card p, .update-card, .activation-input,
+        .site-header__link, .site-footer, .modal-box {
+            font-family: 'Minecraft', 'Minecraft Regular', 'Inter', sans-serif !important;
+        }
+        
+        /* 调整 Minecraft 字体下的行高与字间距，避免过于拥挤 */
+        body { line-height: 1.8; }
+        .hero__title { line-height: 1.2; letter-spacing: 0.02em; }
+        .btn, .hero__button { letter-spacing: 0.05em; }
+    </style>
 </head>
 <body>
     <!-- ===== BACKGROUND ATMOSPHERE ===== -->
@@ -325,38 +341,26 @@
     <script type="module">
         import { supabase } from './supabase.js';
 
-        // --- Fade-in ---
         const fadeElements = document.querySelectorAll('.fade-in');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.2 });
         fadeElements.forEach(el => observer.observe(el));
 
-        // --- Navbar toggle ---
         const toggle = document.getElementById('navToggle');
         const nav = document.querySelector('.site-header__nav');
-        toggle.addEventListener('click', () => {
-            nav.classList.toggle('open');
-        });
+        toggle.addEventListener('click', () => nav.classList.toggle('open'));
 
-        // --- Modal ---
         const modal = document.getElementById('downloadModal');
         const openBtn = document.getElementById('openDownloadModal');
         const closeBtn = document.getElementById('closeModal');
         const windowsBtn = document.getElementById('windowsDownloadBtn');
 
-        openBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.add('active');
-        });
+        openBtn.addEventListener('click', (e) => { e.preventDefault(); modal.classList.add('active'); });
         closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('active');
-        });
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
         windowsBtn.addEventListener('click', () => {
             const a = document.createElement('a');
             a.href = 'https://example.com/glint-client-setup.exe';
@@ -367,62 +371,33 @@
             modal.classList.remove('active');
         });
 
-        // --- Activation ---
         const activationInput = document.getElementById('activationInput');
         const activationCheckBtn = document.getElementById('activationCheckBtn');
         const activationResult = document.getElementById('activationResult');
 
         activationCheckBtn.addEventListener('click', async () => {
             const code = activationInput.value.trim();
-            if (!code) {
-                activationResult.textContent = 'Enter a code.';
-                activationResult.className = 'activation-result invalid';
-                return;
-            }
+            if (!code) { activationResult.textContent = 'Enter a code.'; activationResult.className = 'activation-result invalid'; return; }
             try {
-                const { data, error } = await supabase
-                    .from('codes')
-                    .select('code, active, expires_at, reward')
-                    .eq('code', code)
-                    .single();
-                if (error || !data) {
-                    activationResult.textContent = 'Invalid code.';
-                    activationResult.className = 'activation-result invalid';
-                    return;
-                }
-                if (!data.active) {
-                    activationResult.textContent = 'Code expired.';
-                    activationResult.className = 'activation-result expired';
-                    return;
-                }
+                const { data, error } = await supabase.from('codes').select('code, active, expires_at, reward').eq('code', code).single();
+                if (error || !data) { activationResult.textContent = 'Invalid code.'; activationResult.className = 'activation-result invalid'; return; }
+                if (!data.active) { activationResult.textContent = 'Code expired.'; activationResult.className = 'activation-result expired'; return; }
                 if (data.expires_at) {
-                    const now = new Date();
-                    const exp = new Date(data.expires_at);
-                    if (exp < now) {
-                        activationResult.textContent = 'Code expired.';
-                        activationResult.className = 'activation-result expired';
-                        return;
-                    }
+                    const now = new Date(); const exp = new Date(data.expires_at);
+                    if (exp < now) { activationResult.textContent = 'Code expired.'; activationResult.className = 'activation-result expired'; return; }
                 }
                 let msg = '✅ Valid code.';
                 if (data.reward) msg += ` Reward: ${data.reward}`;
-                activationResult.textContent = msg;
-                activationResult.className = 'activation-result valid';
+                activationResult.textContent = msg; activationResult.className = 'activation-result valid';
             } catch (err) {
-                activationResult.textContent = 'Error checking code.';
-                activationResult.className = 'activation-result invalid';
-                console.error(err);
+                activationResult.textContent = 'Error checking code.'; activationResult.className = 'activation-result invalid'; console.error(err);
             }
         });
 
-        // --- Player Count ---
         const playerCountDisplay = document.getElementById('playerCountDisplay');
         async function updatePlayerCount() {
             try {
-                const { count, error } = await supabase
-                    .from('player_active')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('is_online', true);
+                const { count, error } = await supabase.from('player_active').select('*', { count: 'exact', head: true }).eq('is_online', true);
                 if (error) throw error;
                 const countText = count === 1 ? '1 player' : `${count} players`;
                 playerCountDisplay.innerHTML = `<i class="fas fa-users"></i> <span>${countText}</span> online`;
